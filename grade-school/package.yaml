@@ -1,0 +1,19 @@
+name: grade-school
+
+dependencies:
+  - base
+  - containers
+  
+library:
+  exposed-modules: School
+  source-dirs: src
+  dependencies:
+  
+      
+tests:
+  test:
+    main: Tests.hs
+    source-dirs: test
+    dependencies:
+      - grade-school
+      - hspec

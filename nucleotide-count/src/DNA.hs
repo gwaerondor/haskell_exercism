@@ -1,6 +1,5 @@
 module DNA (nucleotideCounts) where
-
-import Data.Map (Map, adjustWithKey, fromList)
+import Data.Map (Map, insertWith, fromList)
 
 nucleotideCounts :: String -> Either String (Map Char Int)
 nucleotideCounts xs
@@ -11,5 +10,4 @@ nucleotideCounts xs
     init = fromList [('A', 0), ('C', 0), ('G', 0), ('T', 0)]
 
 incrementKey :: Map Char Int -> Char -> Map Char Int
-incrementKey m key = (adjustWithKey (\_ v -> v + 1) key) m
-
+incrementKey m key = insertWith (+) key 1 m

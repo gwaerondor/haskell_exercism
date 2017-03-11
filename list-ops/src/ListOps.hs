@@ -13,12 +13,17 @@ import Prelude hiding
   ( length, reverse, map, filter, foldr, (++), concat )
 
 foldl' :: (b -> a -> b) -> b -> [a] -> b
-foldl' f = foldr (flip f)
-
+foldl' _ res [] = res
+foldl' f init (x:xs) = new `seq` (foldl' f new xs)
+  where
+    new = f init x
+                       
 foldr :: (a -> b -> b) -> b -> [a] -> b
-foldr _ res [] = res
-foldr f init (x:xs) = foldr f (f x init) xs
-
+foldr f init es = doFold f init (reverse es)
+  where
+    doFold _ res [] = res
+    doFold f init (x:xs) = doFold f (f x init) xs
+    
 length :: [a] -> Int
 length = foldr (\_ len -> len + 1) 0
 
@@ -38,7 +43,10 @@ filter predicate (x:xs)
   | otherwise = filter predicate xs
 
 (++) :: [a] -> [a] -> [a]
-xs ++ ys = error "You need to implement this function."
+xs ++ ys = doAppend (reverse xs) ys
+  where
+    doAppend [] ys = ys
+    doAppend (x:xs) ys = doAppend xs (x:ys)
 
 concat :: [[a]] -> [a]
-concat = error "You need to implement this function."
+concat = foldr (\e acc -> (e ++ acc)) []

@@ -19,13 +19,23 @@ data Schedule = First
               | Teenth
 
 meetupDay :: Schedule -> Weekday -> Integer -> Int -> Day
-meetupDay Teenth weekday year month = getTeenth weekday year month 13
-meetupDay schedule weekday year month = error "You need to implement this function."
+meetupDay Teenth weekday year month = getTeenth weekday year month
+meetupDay First weekday year month = getNth weekday year month 1
+meetupDay Second weekday year month = getNth weekday year month 2
+meetupDay Third weekday year month = getNth weekday year month 3
+meetupDay Fourth weekday year month = getNth weekday year month 4
+meetupDay _ _ _ _ = error "Still not implemented"
 
-getTeenth :: Weekday -> Integer -> Int -> Int -> Day
-getTeenth weekday year month day
+getTeenth :: Weekday -> Integer -> Int -> Day
+getTeenth weekday year month = getFirstAfter weekday year month 13
+
+getNth :: Weekday -> Integer -> Int -> Int -> Day
+getNth weekday year month n = getFirstAfter weekday year month (1+((n-1)*7))
+
+getFirstAfter :: Weekday -> Integer -> Int -> Int -> Day
+getFirstAfter weekday year month day
   | isCorrectDay = fromGregorian year month day
-  | otherwise = getTeenth weekday year month (day+1)
+  | otherwise = getFirstAfter weekday year month (day+1)
   where
     calendarDay = fromGregorian year month day
     isCorrectDay = (third (toWeekDate calendarDay)) == (toWeekdayNumber weekday)

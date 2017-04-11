@@ -1,0 +1,19 @@
+name: pangram
+
+dependencies:
+  - base
+  - containers
+  
+library:
+  exposed-modules: Pangram
+  source-dirs: src
+  dependencies:
+
+
+tests:
+  test:
+    main: Tests.hs
+    source-dirs: test
+    dependencies:
+      - pangram
+      - hspec

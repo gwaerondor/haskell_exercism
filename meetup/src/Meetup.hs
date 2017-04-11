@@ -1,6 +1,6 @@
 module Meetup (Weekday(..), Schedule(..), meetupDay) where
 
-import Data.Time.Calendar (Day, fromGregorian)
+import Data.Time.Calendar (Day, fromGregorian, gregorianMonthLength)
 import Data.Time.Calendar.WeekDate (toWeekDate)
 
 data Weekday = Monday
@@ -24,7 +24,7 @@ meetupDay First weekday year month = getNth weekday year month 1
 meetupDay Second weekday year month = getNth weekday year month 2
 meetupDay Third weekday year month = getNth weekday year month 3
 meetupDay Fourth weekday year month = getNth weekday year month 4
-meetupDay _ _ _ _ = error "Still not implemented"
+meetupDay Last weekday year month = getLast weekday year month (gregorianMonthLength year month)
 
 getTeenth :: Weekday -> Integer -> Int -> Day
 getTeenth weekday year month = getFirstAfter weekday year month 13
@@ -51,3 +51,11 @@ toWeekdayNumber Sunday = 7
 
 third :: (a, b, c) -> c
 third (_, _, x) = x
+
+getLast :: Weekday -> Integer -> Int -> Int -> Day
+getLast weekday year month day
+  | isCorrectDay = fromGregorian year month day
+  | otherwise = getLast weekday year month (day-1)
+  where
+    calendarDay = fromGregorian year month day
+    isCorrectDay = (third (toWeekDate calendarDay)) == (toWeekdayNumber weekday)

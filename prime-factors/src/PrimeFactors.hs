@@ -1,7 +1,15 @@
 module PrimeFactors (primeFactors) where
 
 primeFactors :: Integer -> [Integer]
-primeFactors n = reduceToPrimes n (n-1) []
+primeFactors n = reduceToPrimes' [n] [n]
+
+reduceToPrimes' :: [Integer] -> [Integer] -> [Integer]
+reduceToPrimes' [] _ = []
+reduceToPrimes' (n:ns) init
+  | res == init = res
+  | otherwise = reduceToPrimes' res res
+  where
+    res = (reduceToPrimes n (n-1) []) ++ (reduceToPrimes' ns init)
 
 reduceToPrimes :: Integer -> Integer -> [Integer] -> [Integer]
 reduceToPrimes remainder currentTry currentFactors

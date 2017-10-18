@@ -1,19 +1,31 @@
 module Luhn (isValid) where
 
 isValid :: String -> Bool
-isValid n = isDivisibleByTen $ sum $ map subtractIfNecessary $ multiplyEverySecond $ map charToInteger $ removeSpaces $ reverse n
+isValid n
+  | length stripped <= 1 = False
+  | otherwise = isDivisibleByTen $ calculateLuhnNumber $ toIntList stripped
   where
-    charToInteger c = read [c] :: Integer
+    stripped = removeSpaces n
     
-multiplyEverySecond [x] = [x]
-multiplyEverySecond [] = []
-multiplyEverySecond (x:y:xs) = (x:(y*2):(multiplyEverySecond xs))
+charToInteger :: Char -> Integer
+charToInteger c = read [c]
+
+toIntList :: String -> [Integer]
+toIntList cs = map charToInteger $ reverse cs
+
+removeSpaces :: String -> String
+removeSpaces cs = filter (/=' ') cs
+
+calculateLuhnNumber :: [Integer] -> Integer
+calculateLuhnNumber xs = sum (map subtractIfNecessary $ doubleEverySecond xs)
+
+doubleEverySecond [x] = [x]
+doubleEverySecond [] = []
+doubleEverySecond (x:y:xs) = (x:(y*2):(doubleEverySecond xs))
 
 subtractIfNecessary x
   | x > 9 = x - 9
   | otherwise = x
 
-isDivisibleByTen 0 = False
 isDivisibleByTen x = x `mod` 10 == 0
 
-removeSpaces cs = filter (/=' ') cs
